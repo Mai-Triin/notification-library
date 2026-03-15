@@ -35,8 +35,9 @@ build/
 ### Mac OS ###
 .DS_Store
 
-### Sensitive datakas  ###
+### Sensitiivsed andmed ###
 *.env
 .env
 application-local.properties
 application-local.yml
+src/main/resources/notification.properties
