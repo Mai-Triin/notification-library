@@ -1,5 +1,6 @@
 package com.notification.adapter;
 
+import com.notification.core.NotificationException;
 import com.notification.core.NotificationMessage;
 import com.notification.core.NotificationSender;
 import com.twilio.Twilio;
@@ -29,7 +30,7 @@ public class TwilioAdapter implements NotificationSender {
                 message.getBody()
             ).create();
         } catch (TwilioException e) {
-            throw new RuntimeException("Twilio saatmine ebaõnnestus", e);
+            throw new NotificationException("Twilio", "SMS saatmine ebaõnnestus", e);
         }
     }
 }

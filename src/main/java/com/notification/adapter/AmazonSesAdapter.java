@@ -1,5 +1,6 @@
 package com.notification.adapter;
 
+import com.notification.core.NotificationException;
 import com.notification.core.NotificationMessage;
 import com.notification.core.NotificationSender;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
@@ -40,7 +41,7 @@ public class AmazonSesAdapter implements NotificationSender {
         try {
             client.sendEmail(request);
         } catch (SesException e) {
-            throw new RuntimeException("Amazon SES saatmine ebaõnnestus", e);
+            throw new NotificationException("AmazonSES", "E-posti saatmine ebaõnnestus", e);
         }
     }
 }

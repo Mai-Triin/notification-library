@@ -1,5 +1,6 @@
 package com.notification.adapter;
 
+import com.notification.core.NotificationException;
 import com.notification.core.NotificationMessage;
 import com.notification.core.NotificationSender;
 import com.sendgrid.Method;
@@ -37,8 +38,11 @@ public class SendGridAdapter implements NotificationSender {
             request.setEndpoint("mail/send");
             request.setBody(mail.build());
             Response response = sg.api(request);
+            if (response.getStatusCode() < 200 || response.getStatusCode() >= 300) {
+                throw new NotificationException("SendGrid", "E-posti saatmine ebaõnnestus, HTTP " + response.getStatusCode());
+            }
         } catch (IOException e) {
-            throw new RuntimeException("SendGrid saatmine ebaõnnestus", e);
+            throw new NotificationException("SendGrid", "E-posti saatmine ebaõnnestus", e);
         }
     }
 }
