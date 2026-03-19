@@ -1,14 +1,14 @@
 package com.notification.adapter;
 
-import com.notification.core.NotificationException;
-import com.notification.core.NotificationMessage;
-import com.notification.core.NotificationSender;
+import com.notification.core.EmailMessage;
+import com.notification.core.EmailProvider;
+import com.notification.core.SendResult;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.ses.SesClient;
 import software.amazon.awssdk.services.ses.model.*;
 
-public class AmazonSesAdapter implements NotificationSender {
+public class AmazonSesAdapter implements EmailProvider {
 
     private final String fromEmail;
     private final Region region;
@@ -19,7 +19,7 @@ public class AmazonSesAdapter implements NotificationSender {
     }
 
     @Override
-    public void send(NotificationMessage message) {
+    public SendResult send(EmailMessage message) {
         SesClient client = SesClient.builder()
                 .region(region)
                 .credentialsProvider(DefaultCredentialsProvider.create())
@@ -40,8 +40,9 @@ public class AmazonSesAdapter implements NotificationSender {
 
         try {
             client.sendEmail(request);
+            return SendResult.success("AmazonSES");
         } catch (SesException e) {
-            throw new NotificationException("AmazonSES", "E-posti saatmine ebaõnnestus", e);
+            return SendResult.failure("AmazonSES", "E-posti saatmine ebaõnnestus: " + e.getMessage());
         }
     }
 }

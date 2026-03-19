@@ -3,7 +3,8 @@ package com.notification.factory;
 import com.notification.adapter.AmazonSesAdapter;
 import com.notification.adapter.SendGridAdapter;
 import com.notification.adapter.TwilioAdapter;
-import com.notification.core.NotificationSender;
+import com.notification.core.EmailProvider;
+import com.notification.core.SmsProvider;
 import software.amazon.awssdk.regions.Region;
 
 import java.io.IOException;
@@ -32,7 +33,7 @@ public class NotificationFactory {
         return props;
     }
 
-    public NotificationSender createSmsSender() {
+    public SmsProvider createSmsSender() {
         String provider = properties.getProperty("notification.provider.sms");
         if ("twilio".equalsIgnoreCase(provider)) {
             return new TwilioAdapter(
@@ -44,7 +45,7 @@ public class NotificationFactory {
         throw new RuntimeException("Tundmatu SMS teenusepakkuja: " + provider);
     }
 
-    public NotificationSender createEmailSender() {
+    public EmailProvider createEmailSender() {
         String provider = properties.getProperty("notification.provider.email");
         if ("sendgrid".equalsIgnoreCase(provider)) {
             return new SendGridAdapter(

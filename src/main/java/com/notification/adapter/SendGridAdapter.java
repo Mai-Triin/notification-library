@@ -1,8 +1,8 @@
 package com.notification.adapter;
 
-import com.notification.core.NotificationException;
-import com.notification.core.NotificationMessage;
-import com.notification.core.NotificationSender;
+import com.notification.core.EmailMessage;
+import com.notification.core.EmailProvider;
+import com.notification.core.SendResult;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
 import com.sendgrid.Response;
@@ -13,7 +13,7 @@ import com.sendgrid.helpers.mail.objects.Email;
 
 import java.io.IOException;
 
-public class SendGridAdapter implements NotificationSender {
+public class SendGridAdapter implements EmailProvider {
 
     private final String apiKey;
     private final String fromEmail;
@@ -24,7 +24,7 @@ public class SendGridAdapter implements NotificationSender {
     }
 
     @Override
-    public void send(NotificationMessage message) {
+    public SendResult send(EmailMessage message) {
         Email from = new Email(fromEmail);
         Email to = new Email(message.getTo());
         Content content = new Content("text/plain", message.getBody());
@@ -39,10 +39,11 @@ public class SendGridAdapter implements NotificationSender {
             request.setBody(mail.build());
             Response response = sg.api(request);
             if (response.getStatusCode() < 200 || response.getStatusCode() >= 300) {
-                throw new NotificationException("SendGrid", "E-posti saatmine ebaõnnestus, HTTP " + response.getStatusCode());
+                return SendResult.failure("SendGrid", "E-posti saatmine ebaõnnestus, HTTP " + response.getStatusCode());
             }
+            return SendResult.success("SendGrid");
         } catch (IOException e) {
-            throw new NotificationException("SendGrid", "E-posti saatmine ebaõnnestus", e);
+            return SendResult.failure("SendGrid", "E-posti saatmine ebaõnnestus: " + e.getMessage());
         }
     }
 }
