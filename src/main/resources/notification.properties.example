@@ -1,0 +1,18 @@
+# SMS teenusepakkuja valik: twilio
+notification.provider.sms=twilio
+
+# E-posti teenusepakkuja valik: sendgrid või ses
+notification.provider.email=sendgrid
+
+# Twilio seadistused (SMS)
+twilio.account.sid=YOUR_ACCOUNT_SID
+twilio.auth.token=YOUR_AUTH_TOKEN
+twilio.phone.number=+1XXXXXXXXXX
+
+# SendGrid seadistused (e-post)
+sendgrid.api.key=YOUR_SENDGRID_API_KEY
+sendgrid.from.email=your@email.com
+
+# Amazon SES seadistused (e-post)
+ses.from.email=your@email.com
+ses.region=us-east-1
