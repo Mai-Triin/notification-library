@@ -7,8 +7,12 @@ import com.notification.core.SendResult;
 import com.notification.core.SmsMessage;
 import com.notification.core.SmsProvider;
 import com.notification.factory.NotificationFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NotificationService {
+
+    private static final Logger logger = LoggerFactory.getLogger(NotificationService.class);
 
     private final SmsProvider smsSender;
     private final EmailProvider emailSender;
@@ -31,7 +35,14 @@ public class NotificationService {
         if (body == null || body.isBlank()) {
             throw new NotificationException("SMS", "Sõnumi sisu ei tohi olla tühi");
         }
-        return smsSender.send(new SmsMessage(to, body));
+        logger.info("SMS saatmine alustatud. Saaja: {}", to);
+        SendResult result = smsSender.send(new SmsMessage(to, body));
+        if (result.isSuccess()) {
+            logger.info("SMS saatmine õnnestus. Saaja: {}", to);
+        } else {
+            logger.error("SMS saatmine ebaõnnestus. Saaja: {}. Viga: {}", to, result.getErrorMessage());
+        }
+        return result;
     }
 
     public SendResult sendEmail(String to, String subject, String body) {
@@ -44,6 +55,13 @@ public class NotificationService {
         if (body == null || body.isBlank()) {
             throw new NotificationException("Email", "E-posti sisu ei tohi olla tühi");
         }
-        return emailSender.send(new EmailMessage(to, subject, body));
+        logger.info("E-posti saatmine alustatud. Saaja: {}", to);
+        SendResult result = emailSender.send(new EmailMessage(to, subject, body));
+        if (result.isSuccess()) {
+            logger.info("E-posti saatmine õnnestus. Saaja: {}", to);
+        } else {
+            logger.error("E-posti saatmine ebaõnnestus. Saaja: {}. Viga: {}", to, result.getErrorMessage());
+        }
+        return result;
     }
 }
